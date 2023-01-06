@@ -20,8 +20,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
-    private static final String GATEWAY_LIB_URL = "http://gateway:8080/api/v1/libraries/";
-    private static final String GATEWAY_RATING_URL = "http://gateway:8080/api/v1/rating";
+    private static final String GATEWAY_LIB_URL = "http://localhost:8080/api/v1/libraries/";
+    private static final String GATEWAY_RATING_URL = "http://localhost:8080/api/v1/rating";
     private final ReservationRepository reservationRepository;
 
     private BookDto getBookDto(UUID bookUid, UUID libUid) {
@@ -30,10 +30,28 @@ public class ReservationServiceImpl implements ReservationService {
         return restTemplate.getForObject(uri, BookDto.class);
     }
 
+    private BookDto getBookDto(UUID bookUid, UUID libUid, String authHeader) {
+        String uri = GATEWAY_LIB_URL + libUid + "/book/" + bookUid;
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", authHeader);
+        HttpEntity<BookDto> rq = new HttpEntity<>(null, headers);
+        return restTemplate.exchange(uri, HttpMethod.GET, rq, BookDto.class).getBody();
+    }
+
     private LibraryDto getLibDto(UUID libUid) {
         String uri = GATEWAY_LIB_URL + libUid + "/info";
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(uri, LibraryDto.class);
+    }
+
+    private LibraryDto getLibDto(UUID libUid, String authHeader) {
+        String uri = GATEWAY_LIB_URL + libUid + "/info";
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", authHeader);
+        HttpEntity<LibraryDto> rq = new HttpEntity<>(null, headers);
+        return restTemplate.exchange(uri, HttpMethod.GET, rq, LibraryDto.class).getBody();
     }
 
     private UserRatingResponse getStars(String user) {
@@ -44,40 +62,55 @@ public class ReservationServiceImpl implements ReservationService {
         return restTemplate.exchange(GATEWAY_RATING_URL, HttpMethod.GET, rq, UserRatingResponse.class).getBody();
     }
 
-    private void decreaseRating(String username, Boolean expired, Boolean badCondition) {
+    private UserRatingResponse getStars(String user, String authHeader) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = GATEWAY_RATING_URL + "/decrease" + "?username=" + username + "&expired=" + expired + "&badCondition=" + badCondition;
-        restTemplate.postForLocation(url, null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-User-Name", user);
+        headers.add("Authorization", authHeader);
+        HttpEntity<TakeBookRequest> rq = new HttpEntity<>(null, headers);
+        return restTemplate.exchange(GATEWAY_RATING_URL, HttpMethod.GET, rq, UserRatingResponse.class).getBody();
     }
 
-    private void increaseRating(String username) {
+    private void decreaseRating(String username, Boolean expired, Boolean badCondition, String authHeader) {
         RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", authHeader);
+        String url = GATEWAY_RATING_URL + "/decrease" + "?username=" + username + "&expired=" + expired + "&badCondition=" + badCondition;
+        HttpEntity<TakeBookRequest> rq = new HttpEntity<>(null, headers);
+        restTemplate.postForLocation(url, rq);
+    }
+
+    private void increaseRating(String username, String authHeader) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", authHeader);
         String url = GATEWAY_RATING_URL + "/increase" + "?username=" + username;
-        restTemplate.postForLocation(url, null);
+        HttpEntity<TakeBookRequest> rq = new HttpEntity<>(null, headers);
+        restTemplate.postForLocation(url, rq);
     }
 
     //ToDo Redo
-    private BookReservationResponse convertToDto(Reservation reservation) {
+    private BookReservationResponse convertToDto(Reservation reservation, String authHeader) {
         if (reservation == null) return null;
         return BookReservationResponse.builder()
                 .reservationUid(reservation.getReservationUid().toString())
                 .status(reservation.getStatus().name())
                 .startDate(reservation.getStartDate())
                 .tillDate(reservation.getTillDate())
-                .book(getBookDto(reservation.getBookUid(), reservation.getLibraryUid()))
-                .library(getLibDto(reservation.getLibraryUid()))
+                .book(getBookDto(reservation.getBookUid(), reservation.getLibraryUid(), authHeader))
+                .library(getLibDto(reservation.getLibraryUid(), authHeader))
                 .build();
     }
 
     @Override
-    public ResponseEntity<?> getUserBooksInfo(String username) {
+    public ResponseEntity<?> getUserBooksInfo(String username, String authHeader) {
         List<Reservation> reservation = reservationRepository
                 .findAllByUsernameAndStatusIn(username, new HashSet<>(Arrays.asList(Status.EXPIRED, Status.RENTED)));
-        return ResponseEntity.ok(reservation.stream().map(this::convertToDto).toList());
+        return ResponseEntity.ok(reservation.stream().map(x -> convertToDto(x, authHeader)).toList());
     }
 
     @Override
-    public ResponseEntity<?> takeBook(String username, TakeBookRequest request) {
+    public ResponseEntity<?> takeBook(String username, TakeBookRequest request, String authHeader) {
         List<ErrorDescription> errors = new ArrayList<>();
         if(username == null) errors.add(new ErrorDescription("username", "value is null"));
         if(request.getBookUid() == null) errors.add(new ErrorDescription("bookUid", "value is null"));
@@ -100,14 +133,14 @@ public class ReservationServiceImpl implements ReservationService {
                 .status(reservation.getStatus().name())
                 .startDate(reservation.getStartDate())
                 .tillDate(reservation.getTillDate())
-                .book(getBookDto(bookUid, libUid))
-                .library(getLibDto(libUid))
-                .rating(getStars(username))
+                .book(getBookDto(bookUid, libUid, authHeader))
+                .library(getLibDto(libUid, authHeader))
+                .rating(getStars(username, authHeader))
                 .build());
     }
 
     @Override
-    public ResponseEntity<?> returnBook(String username, UUID reservationUid, ReturnBookRequest request) {
+    public ResponseEntity<?> returnBook(String username, UUID reservationUid, ReturnBookRequest request, String authHeader) {
         Reservation reservation = reservationRepository.findByReservationUid(reservationUid);
         if(reservation == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No reservation found for " + reservationUid));
         Boolean expired = false, badCondition = false;
@@ -119,11 +152,10 @@ public class ReservationServiceImpl implements ReservationService {
         }
         if(!request.getCondition().equals("EXCELLENT")) badCondition = true;
         if(expired || badCondition) {
-            decreaseRating(username, expired, badCondition);
+            decreaseRating(username, expired, badCondition, authHeader);
         } else {
-            increaseRating(username);
+            increaseRating(username, authHeader);
         }
-        //ToDo increase available_count
         reservationRepository.save(reservation);
         return ResponseEntity.noContent().build();
     }

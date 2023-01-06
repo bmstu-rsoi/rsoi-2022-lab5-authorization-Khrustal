@@ -15,7 +15,7 @@ public class RatingRest {
     @Value("${services.ports.rating}")
     private String ratingPort;
 
-    public static final String BASE_URL = "http://rating:8050/api/v1/rating";
+    public static final String BASE_URL = "http://localhost:8050/api/v1/rating";
 
     @GetMapping
     public ResponseEntity<UserRatingResponse> getUserRating(Authentication auth) {

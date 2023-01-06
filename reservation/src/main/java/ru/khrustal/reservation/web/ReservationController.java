@@ -17,20 +17,23 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getUserBooksInfo(@RequestParam("username") String username) {
-        return reservationService.getUserBooksInfo(username);
+    public ResponseEntity<?> getUserBooksInfo(@RequestHeader("Authorization") String authHeader,
+                                              @RequestParam("username") String username) {
+        return reservationService.getUserBooksInfo(username, authHeader);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> takeBook(@RequestParam("username") String username,
+                                      @RequestHeader("Authorization") String authHeader,
                                       @RequestBody TakeBookRequest request) {
-        return reservationService.takeBook(username, request);
+        return reservationService.takeBook(username, request, authHeader);
     }
 
     @PostMapping(value = "/{reservationUid}/return", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> takeBook(@RequestParam("username") String username,
-                                      @PathVariable("reservationUid") UUID reservationUid,
+    public ResponseEntity<?> returnBook(@RequestParam("username") String username,
+                                        @RequestHeader("Authorization") String authHeader,
+                                        @PathVariable("reservationUid") UUID reservationUid,
                                       @RequestBody ReturnBookRequest request) {
-        return reservationService.returnBook(username, reservationUid, request);
+        return reservationService.returnBook(username, reservationUid, request, authHeader);
     }
 }

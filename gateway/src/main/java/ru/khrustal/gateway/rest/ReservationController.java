@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import ru.khrustal.dto.library.BookDto;
 import ru.khrustal.dto.rating.UserRatingResponse;
 import ru.khrustal.dto.reservation.ReturnBookRequest;
 import ru.khrustal.dto.reservation.TakeBookRequest;
@@ -25,13 +26,17 @@ public class ReservationController {
     @Value("${services.ports.reservation}")
     private String reservationPort;
 
-    public static final String BASE_URL = "http://reservation:8070/api/v1/reservations";
+    public static final String BASE_URL = "http://localhost:8070/api/v1/reservations";
 
     @GetMapping
-    public ResponseEntity<?> getUserReservedBooks(Authentication auth) {
+    public ResponseEntity<?> getUserReservedBooks(@RequestHeader("Authorization") String authHeader,
+                                                  Authentication auth) {
         RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", authHeader);
         String url = BASE_URL + "?username=" + auth.getName();
-        List<?> result = restTemplate.getForObject(url, List.class);
+        HttpEntity<TakeBookRequest> rq = new HttpEntity<>(null, headers);
+        List<?> result = restTemplate.exchange(url, HttpMethod.GET, rq, List.class).getBody();
         return ResponseEntity.ok(result);
     }
 
@@ -40,10 +45,10 @@ public class ReservationController {
                                       @RequestHeader("Authorization") String authHeader,
                                       Authentication auth) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<TakeBookRequest> rq = new HttpEntity<>(request, null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", authHeader);
+        HttpEntity<TakeBookRequest> rq = new HttpEntity<>(request, headers);
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", authHeader);
             return restTemplate.exchange(BASE_URL + "?username=" + auth.getName(), HttpMethod.POST, rq, TakeBookResponse.class);
         } catch (HttpStatusCodeException e) {
            return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
@@ -56,9 +61,11 @@ public class ReservationController {
                                         Authentication auth,
                                         @RequestBody ReturnBookRequest request) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<ReturnBookRequest> rq = new HttpEntity<>(request, null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", authHeader);
+        HttpEntity<ReturnBookRequest> rq = new HttpEntity<>(request, headers);
         try {
-            return restTemplate.postForEntity(BASE_URL + "/" + reservationUid + "/return" + "?username=" + auth.getName(), rq, ReturnBookRequest.class);
+            return restTemplate.exchange(BASE_URL + "/" + reservationUid + "/return" + "?username=" + auth.getName(), HttpMethod.POST, rq, ReturnBookRequest.class);
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
         }
