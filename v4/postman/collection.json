@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "e3528f2e-2938-4381-8aa9-0eafeeed450c",
+		"_postman_id": "a939b0aa-49f0-4095-bbba-b47eaba381fe",
 		"name": "[rsoi][lab5] Library System",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "976707"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -31,7 +30,19 @@
 					],
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{clientSecret}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{clientId}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -76,7 +87,7 @@
 								"{{identityProviderUrl}}"
 							],
 							"path": [
-								"oauth",
+								"v1",
 								"token"
 							]
 						}
