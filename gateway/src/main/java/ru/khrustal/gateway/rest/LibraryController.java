@@ -19,11 +19,11 @@ public class LibraryController {
     @Value("${services.ports.library}")
     private String libraryPort;
 
-    public static final String BASE_URL = "http://localhost:8060/api/v1/libraries/";
+    public static final String BASE_URL = "http://library:8060/api/v1/libraries/";
 
     @GetMapping("")
     public ResponseEntity<?> getCityLibs(@RequestParam("city") String city) {
-        String uri = "http://localhost:8060/api/v1/libraries?city=" + city;
+        String uri = "http://library:8060/api/v1/libraries?city=" + city;
         RestTemplate restTemplate = new RestTemplate();
         PaginationResponse<?> result = restTemplate.getForObject(uri, PaginationResponse.class);
         return ResponseEntity.ok(result);

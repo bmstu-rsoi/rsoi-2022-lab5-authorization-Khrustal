@@ -20,8 +20,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
-    private static final String GATEWAY_LIB_URL = "http://localhost:8080/api/v1/libraries/";
-    private static final String GATEWAY_RATING_URL = "http://localhost:8080/api/v1/rating";
+    private static final String GATEWAY_LIB_URL = "http://gateway:8080/api/v1/libraries/";
+    private static final String GATEWAY_RATING_URL = "http://gateway:8080/api/v1/rating";
     private final ReservationRepository reservationRepository;
 
     private BookDto getBookDto(UUID bookUid, UUID libUid) {
