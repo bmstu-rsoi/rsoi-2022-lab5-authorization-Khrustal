@@ -4,32 +4,32 @@
   "values": [
     {
       "key": "serviceUrl",
-      "value": "",
+      "value": "http://localhost:8080",
       "enabled": true
     },
     {
       "key": "identityProviderUrl",
-      "value": "",
+      "value": "https://dev-67293951.okta.com/oauth2/default",
       "enabled": true
     },
     {
       "key": "username",
-      "value": "",
+      "value": "testmax@gmail.com",
       "enabled": true
     },
     {
       "key": "password",
-      "value": "",
+      "value": "Password123!",
       "enabled": true
     },
     {
       "key": "clientId",
-      "value": "",
+      "value": "0oa7v6iuxgML1dPu95d7",
       "enabled": true
     },
     {
       "key": "clientSecret",
-      "value": "",
+      "value": "_u1P0Iy4ahy0EfXtVPkS794E5ApwV5yhSNxmjOen",
       "enabled": true
     }
   ],
