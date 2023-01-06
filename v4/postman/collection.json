@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a939b0aa-49f0-4095-bbba-b47eaba381fe",
+		"_postman_id": "aa5aeb3b-af27-4ad6-ac6b-7f94d83ef64e",
 		"name": "[rsoi][lab5] Library System",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -102,7 +102,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Получить список библиотек в городе\", () => {",
-									
 									"    pm.response.to.have.status(401)",
 									"})"
 								],
@@ -153,7 +152,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Получить список библиотек в городе\", () => {",
-									
 									"    pm.response.to.have.status(200)",
 									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.contains(\"application/json\");",
 									"",
@@ -229,7 +227,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Получить список книг в выбранной библиотеке\", () => {",
-									
 									"    pm.response.to.have.status(401)",
 									"})"
 								],
@@ -288,7 +285,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Получить список книг в выбранной библиотеке\", () => {",
-									
 									"    pm.response.to.have.status(200)",
 									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.contains(\"application/json\");",
 									"",
@@ -372,7 +368,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Получить рейтинг пользователя\", () => {",
-									
 									"    pm.response.to.have.status(401)",
 									"})"
 								],
@@ -408,7 +403,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Получить рейтинг пользователя\", () => {",
-									
 									"    pm.response.to.have.status(200)",
 									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.contains(\"application/json\");",
 									"",
@@ -456,7 +450,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Взять книгу в библиотеке\", () => {",
-									
 									"    pm.response.to.have.status(401)",
 									"})"
 								],
@@ -503,7 +496,6 @@
 									"const moment = require(\"moment\")",
 									"",
 									"pm.test(\"Взять книгу в библиотеке\", () => {",
-									
 									"    pm.response.to.have.status(200)",
 									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.contains(\"application/json\");",
 									"",
@@ -580,7 +572,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Получить информацию по всем взятым в прокат книгам пользователя\", () => {",
-									
 									"    pm.response.to.have.status(401)",
 									"})"
 								],
@@ -609,14 +600,102 @@
 					"response": []
 				},
 				{
-					"name": "[success] Получить информацию по всем взятым в прокат книгам пользователя",
+					"name": "SAMPLE1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorizationToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{serviceUrl}}/api/v1/reservations",
+							"host": [
+								"{{serviceUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SAMPLE2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorizationToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bookUid\": \"{{bookUid}}\",\n    \"libraryUid\": \"{{libraryUid}}\",\n    \"tillDate\": \"2021-10-11\"\n}"
+						},
+						"url": {
+							"raw": "{{serviceUrl}}/api/v1/reservations",
+							"host": [
+								"{{serviceUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[success] Получить информацию по всем взятым в прокат книгам пользователя Copy",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"pm.test(\"Получить информацию по всем взятым в прокат книгам пользователя\", () => {",
-									
 									"    pm.response.to.have.status(200)",
 									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.contains(\"application/json\");",
 									"",
@@ -683,7 +762,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Вернуть книгу\", () => {",
-									
 									"    pm.response.to.have.status(401)",
 									"})"
 								],
@@ -797,7 +875,6 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Получить рейтинг пользователя\", () => {",
-									
 									"    pm.response.to.have.status(200)",
 									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.contains(\"application/json\");",
 									"",

@@ -1,6 +1,7 @@
 package ru.khrustal.reservation.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +18,7 @@ import ru.khrustal.reservation.service.ReservationService;
 
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
@@ -103,7 +105,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ResponseEntity<?> getUserBooksInfo(String username, String authHeader) {
+    public ResponseEntity<List<BookReservationResponse>> getUserBooksInfo(String username, String authHeader) {
         List<Reservation> reservation = reservationRepository
                 .findAllByUsernameAndStatusIn(username, new HashSet<>(Arrays.asList(Status.EXPIRED, Status.RENTED)));
         return ResponseEntity.ok(reservation.stream().map(x -> convertToDto(x, authHeader)).toList());
