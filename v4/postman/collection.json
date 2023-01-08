@@ -945,7 +945,7 @@
 	"variable": [
 		{
 			"key": "serviceUrl",
-			"value": "http://gateway:8080"
+			"value": "http://gateway-service:8080"
 		},
 		{
 			"key": "libraryUid",

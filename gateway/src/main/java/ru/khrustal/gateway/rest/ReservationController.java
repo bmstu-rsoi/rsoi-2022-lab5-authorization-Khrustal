@@ -26,7 +26,7 @@ public class ReservationController {
     @Value("${services.ports.reservation}")
     private String reservationPort;
 
-    public static final String BASE_URL = "http://reservation:8070/api/v1/reservations";
+    public static final String BASE_URL = "http://reservation-service:8070/api/v1/reservations";
 
     @GetMapping
     public ResponseEntity<?> getUserReservedBooks(@RequestHeader("Authorization") String authHeader,

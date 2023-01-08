@@ -4,7 +4,7 @@
   "values": [
     {
       "key": "serviceUrl",
-      "value": "http://localhost:8080",
+      "value": "51.250.82.126",
       "enabled": true
     },
     {

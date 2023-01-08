@@ -1,0 +1,31 @@
+rating:
+  service:
+    port: 8050
+    image:
+      name: akhrustal/rating
+      version: "latest"
+    database:
+      url:
+library:
+  service:
+    port: 8060
+    image:
+      name: akhrustal/library
+      version: "latest"
+    database: 
+      url:
+reservation:
+  service:
+    port: 8070
+    image:
+      name: akhrustal/reservation
+      version: "latest"
+    database: 
+      url:
+gateway:
+  service:
+    port: 8080
+    image:
+      name: akhrustal/gateway
+      version: "latest"
+    isGateway: true

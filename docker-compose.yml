@@ -1,37 +1,24 @@
 services:
-  postgres:
-    image: library/postgres:13
-    container_name: postgres
-    restart: on-failure
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: postgres
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
-
   gateway:
-    image: gateway
+    image: akhrustal/gateway
     build: ./gateway/
     ports:
       - "8080:8080"
 
   reservation:
-    image: reservation
+    image: akhrustal/reservation
     build: ./reservation/
     ports:
       - "8070:8070"
 
   library:
-    image: library
+    image: akhrustal/library
     build: ./library/
     ports:
       - "8060:8060"
 
   rating:
-    image: rating
+    image: akhrustal/rating
     build: ./rating/
     ports:
       - "8050:8050"
