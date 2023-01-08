@@ -50,7 +50,7 @@ jobs:
       - name: Deploy Services to YC
         run: helm install srv k8s/services-chart
 
-      - name: Wait 60 seconds
+      - name: Wait
         run: sleep 60
 
       - name: Run API Tests
